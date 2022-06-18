@@ -1,0 +1,9 @@
+<odoo>
+    <template id="book_list_extended" name="Extended Book List" inherit_id="library_app.book_list_template">
+        <xpath expr="//span[@t-field='book.date_published']" position="after">
+        <t t-if="not book.is_available">
+            <b>(Not Available)</b>
+        </t>
+        </xpath>
+    </template>
+</odoo>
