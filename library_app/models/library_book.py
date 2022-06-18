@@ -7,12 +7,39 @@ from odoo.exceptions import ValidationError
 class Book(models.Model):
     _name = 'library.book'
     _description = 'Book Info'
+    _order = 'name, date_published desc'
 
+    # String fields:
     name = fields.Char(string="Title", required=True)
     isbn = fields.Char(string='ISBN')
-    active = fields.Boolean(string='Active?', default=True)
+    book_type = fields.Selection(
+        [("paper", "Paperback"),
+         ("hard", "Hardcover"),
+         ("electronic", "Electronic"),
+         ("other", "Other")],
+        "Type")
+
+    notes = fields.Text("Internal Notes")
+    descr = fields.Html("Description")
+
+    # Numeric fields:
+    copies = fields.Integer(default=1)
+    avg_rating = fields.Float("Average Rating", (3, 2))
+    price = fields.Monetary("Price", "currency_id")
+    # price helper
+    currency_id = fields.Many2one("res.currency")
+
+    # Date and time fields:
     date_published = fields.Date()
+    last_borrow_date = fields.Datetime(
+        "Last Borrowed on",
+        default=lambda self: fields.Datetime.now())
+
+    # Other fields:
+    active = fields.Boolean(string='Active?', default=True)
     image = fields.Binary('Cover')
+
+    # Relational fields:
     publisher_id = fields.Many2one("res.partner", string="Publisher")
     author_ids = fields.Many2many('res.partner', string="Authors")
 
