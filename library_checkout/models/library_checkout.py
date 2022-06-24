@@ -1,4 +1,4 @@
-from odoo import fields, api, models
+from odoo import fields, api, models, exceptions
 
 
 class Checkout(models.Model):
@@ -36,3 +36,15 @@ class Checkout(models.Model):
     def _group_expand_stage_id(self, stages, domain, order):
         return stages.search([], order=order)
 
+    @api.model
+    def create(self, vals_list):
+        # Code before create: should use the vals dict
+        new_record = super().create(vals_list)
+        # Code after create: can use the 'new record'
+        # Created
+        if new_record.stage_id.state in ("open", "close"):
+            raise exceptions.UserError(
+                "State not be allowed for new checkouts"
+            )
+
+        return new_record
