@@ -27,6 +27,9 @@ class Checkout(models.Model):
                                )
     state = fields.Selection(related="state_id.state")
 
+    checkout_date = fields.Date(readonly=True)
+    close_date = fields.Date(reaonly=True)
+
     @api.model
     def _default_stage_id(self):
         stage = self.env["library.checkout.stage"]
@@ -48,3 +51,22 @@ class Checkout(models.Model):
             )
 
         return new_record
+
+    def write(self, vals):
+        # Code before write: 'self' has old values
+        if "stage_id" in vals:
+            stage = self.env['library.checkout.stage']
+            old_state = self.stage_id.state
+            new_state = stage.browse(vals["stage_id"]).state
+            if new_state != old_state and new_state == "open":
+                vals['checkout_date'] = fields.Date.today()
+
+            if new_state != old_state and new_state == "done":
+                vals["close_date"] = fields.Date.today()
+
+            super().write(vals)
+
+            # Code after write: can use 'self' with the updated values
+
+            return True
+
