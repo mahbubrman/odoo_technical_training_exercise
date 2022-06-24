@@ -66,14 +66,14 @@ record = odoo.read('res.partner', [11], ['name'])
 Another example here for updating a record in a model
 ```python
 client.update("DATABASE_NAME", "USER_ID", "ACCESS_TOKEN",
-'res.parter', 'write', [[11],
+'res.partner', 'write', [[11],
 {'name': 'Mahbubur Rahman', 'country_code': 'BD'} )
 ```
 
 Exact same operation can be performed with minimal code in OdooAPI client
 
 ```python
-odoo.update('res.parter', [11], name='Mahbubur Rahman', country_code='BD')
+odoo.update('res.partner', [11], name='Mahbubur Rahman', country_code='BD')
 ```
 
 It reduces code!
