@@ -49,7 +49,7 @@ Let's compare a simple  read operation syntax between original xmlrpc client and
 
 
 
-For XMLRPC client it looks like this where you want to know a name for a user_id=3
+For XMLRPC client it looks like this where you want to know a name for a user_id=11
 
 ```python
 record = client.execute_kw("DATABASE_NAME", "USER_ID", "ACCESS_TOKEN",
@@ -59,7 +59,7 @@ record = client.execute_kw("DATABASE_NAME", "USER_ID", "ACCESS_TOKEN",
 In case of OdooAPI client
 
 ```python
-record = odoo.read('res.partner', [3], ['name'])
+record = odoo.read('res.partner', [11], ['name'])
 ```
 
 
