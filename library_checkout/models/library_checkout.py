@@ -54,19 +54,19 @@ class Checkout(models.Model):
 
     def write(self, vals):
         # Code before write: 'self' has old values
-        if "stage_id" in vals:
-            stage = self.env['library.checkout.stage']
-            old_state = self.stage_id.state
-            new_state = stage.browse(vals["stage_id"]).state
+        old_state = self.stage_id.state
+        super().write(vals)
+        # Code after write: can use 'self' with the updated values
+        new_state = self.stage_id.state
+
+        if not self.env.context.get("_checkout_write"):
             if new_state != old_state and new_state == "open":
-                vals['checkout_date'] = fields.Date.today()
+                self.with_context(_checkout_write=True).write(
+                    {'checkout_date': fields.Date.today()})
 
             if new_state != old_state and new_state == "done":
-                vals["close_date"] = fields.Date.today()
-
-            super().write(vals)
-
-            # Code after write: can use 'self' with the updated values
+                self.with_context(_checkout_write=True).write(
+                    {'close_date': fields.Date.today()})
 
             return True
 
