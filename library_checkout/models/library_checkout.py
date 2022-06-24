@@ -4,6 +4,12 @@ from odoo import fields, api, models, exceptions
 class Checkout(models.Model):
     _name = 'library.checkout'
     _description = "Checkout Request"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+
+    @api.model
+    def _default_stage_id(self):
+        stage = self.env["library.checkout.stage"]
+        return stage.search([("state", "=", "new")], limit=1)
 
     member_id = fields.Many2one(
         "library.member",
@@ -26,18 +32,13 @@ class Checkout(models.Model):
         string="Borrowed Books"
     )
     stage_id = fields.Many2one("library.checkout.stage",
-                               default="_default_stage_id",
+                               default=_default_stage_id,
                                group_expand="_group_expand_stage_id"
                                )
-    state = fields.Selection(related="state_id.state")
+    state = fields.Selection(related="stage_id.state")
 
     checkout_date = fields.Date(readonly=True)
     close_date = fields.Date(reaonly=True)
-
-    @api.model
-    def _default_stage_id(self):
-        stage = self.env["library.checkout.stage"]
-        return stage.search([("state", "=", "new")], limit=1)
 
     @api.model
     def _group_expand_stage_id(self, stages, domain, order):
