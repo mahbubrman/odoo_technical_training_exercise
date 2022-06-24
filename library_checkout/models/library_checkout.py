@@ -70,3 +70,15 @@ class Checkout(models.Model):
 
             return True
 
+    @api.onchange("member_id")
+    def onchange_member_id(self):
+        today_date = fields.Date.today()
+        if self.request_date != today_date:
+            self.request_date = today_date
+        return {
+            "warning": {
+                "title": "Changed Request Date",
+                "message": "Request date changed to today!",}
+        }
+
+
