@@ -43,17 +43,41 @@ odoo = OdooAPI(
 )
 ```
 
-## Example Use
+## Example Use and Comparison
 
-Read a record
+Let's compare a simple  read operation syntax between original xmlrpc client and OdooAPI client.  Let's call XMLRPC client as client here and OdooAPI client is odoo as we initialised in above section.
+
+
+
+For XMLRPC client it looks like this where you want to know a name for a user_id=3
 
 ```python
-# Get user details of id 3
-user_records = odoo.read('res.partner', [3])
-
-# Get user specific(name, country_id) details 
-user_spec = odoo.read('res.partner', [3], ['name', 'country_id'])
+record = client.execute_kw("DATABASE_NAME", "USER_ID", "ACCESS_TOKEN",
+'res.partner', 'read', [[11]], {'fields': 'name'})
 ```
+
+In case of OdooAPI client
+
+```python
+record = odoo.read('res.partner', [3], ['name'])
+```
+
+
+Another example here for updating a record in a model
+```python
+client.update("DATABASE_NAME", "USER_ID", "ACCESS_TOKEN",
+'res.parter', 'write', [[11],
+{'name': 'Mahbubur Rahman', 'country_code': 'BD'} )
+```
+
+Exact same operation can be performed with minimal code in OdooAPI client
+
+```python
+odoo.update('res.parter', [11], name='Mahbubur Rahman', country_code='BD')
+```
+
+It reduces code!
+
 
 OdooApi has all sorts of operations such as, `search`, `read`, `search_read`, `get_fields`, `create`, `update` and 
 `delete`. Odoo XMLRPC has its alternative names for `get_fields`, `update` and
