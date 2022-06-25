@@ -30,3 +30,10 @@ class TestWizard(common.SingleTransactionCase):
 
         self.assertEqual(count_before + 1, count_after,
                          "Expected one additional message in the checkout",)
+
+    def test_02_button_send_empty_body(self):
+        """Send button errors on empty body message"""
+        Wizard0 = self.Wizard.with_context(active_ids=self.checkout0.ids)
+        wizard0 = Wizard0.create({})
+        with self.assertRaises(exceptions.UserError) as e:
+            wizard0.button_send()
